@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.nexor.app</string>
+    <key>CFBundleName</key>
+    <string>Nexor</string>
+    <key>CFBundleDisplayName</key>
+    <string>Nexor</string>
+    <key>CFBundleExecutable</key>
+    <string>Nexor</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Nexor requires access to the local network to discover LAN devices, resolve Apple Bonjour services, and run diagnostic connectivity tests.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Nexor requires location authorization to access the active Wi-Fi SSID and BSSID under macOS privacy policies.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Nexor requires location authorization to access the active Wi-Fi SSID and BSSID under macOS privacy policies.</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Nexor requires Bluetooth access to perform full-spectrum RF scanning, discover nearby Bluetooth Low Energy and Classic devices, and analyze radio signal telemetry.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Nexor requires Bluetooth access to discover and monitor nearby Bluetooth peripherals.</string>
+</dict>
+</plist>

@@ -1,0 +1,32 @@
+# macOS Finder & System files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon\r\r
+
+# Xcode / Swift Build Artifacts
+.build/
+build/
+DerivedData/
+*.app/
+*.dSYM/
+*.ipa
+*.pkg
+
+# Test & Debug Executables
+test_runner
+challenger_runner
+challenger_stress_runner
+challenger_asan_runner
+verify_runner
+
+# Sensitive or Local Environment
+*.env
+*.local
+*.log
+.agents/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo

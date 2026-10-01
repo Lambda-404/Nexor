@@ -12,6 +12,7 @@ DerivedData/
 *.dSYM/
 *.ipa
 *.pkg
+*.zip
 
 # Test & Debug Executables
 test_runner

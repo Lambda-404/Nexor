@@ -1,16 +1,17 @@
 # Nexor
 
 <p align="center">
-  <strong>Modern, Elegant & High-Performance macOS Network Utilities and Full-Spectrum Telemetry Suite</strong><br>
-  <strong>现代、优雅、高性能的 macOS 原生网络工具箱与全频谱遥测套件</strong>
+  <strong>Modern, Elegant & High-Performance macOS & watchOS Network Utilities and Full-Spectrum Telemetry Suite</strong><br>
+  <strong>现代、优雅、高性能的 macOS 与 watchOS 原生网络工具箱与全频谱遥测套件</strong>
 </p>
 
 <p align="center">
-  <img src="Resources/AppIcon.iconset/icon_256x256@2x.png" width="128" height="128" alt="Nexor App Icon" />
+  <img src="Resources/Icons/AppIcon.iconset/icon_256x256@2x.png" width="128" height="128" alt="Nexor App Icon" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-macOS%2014.0%2B-blue.svg" alt="macOS 14.0+" />
+  <img src="https://img.shields.io/badge/Release-v1.0.1-brightgreen.svg" alt="Release: v1.0.1" />
+  <img src="https://img.shields.io/badge/Platform-macOS%2014%2B%20%7C%20watchOS%2010%2B-blue.svg" alt="macOS 14+ | watchOS 10+" />
   <img src="https://img.shields.io/badge/Language-Swift%206-orange.svg" alt="Swift 6" />
   <img src="https://img.shields.io/badge/UI-SwiftUI%20%2F%20Liquid%20Glass-purple.svg" alt="SwiftUI" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT" />
@@ -26,7 +27,46 @@
 ## 🌐 English
 
 ### 📖 Overview
-**Nexor** is a native macOS network diagnostics and RF telemetry application designed for network engineers, system administrators, and security researchers. Built completely with pure Swift 6 and SwiftUI, Nexor combines low-level packet capture primitives, real-time wireless telemetry, passive zero-packet LAN discovery, Bluetooth RF radar, and privileged execution into a cohesive Liquid Glass dashboard.
+**Nexor** is a native macOS and watchOS network diagnostics and RF telemetry application designed for network engineers, system administrators, and security researchers. Built completely with pure Swift 6 and SwiftUI, Nexor combines low-level packet capture primitives, real-time wireless telemetry, passive zero-packet LAN discovery, Bluetooth RF radar, watchOS companion monitoring, and privileged execution into a cohesive Liquid Glass dashboard.
+
+---
+
+### 📂 Modular Project Structure
+
+```text
+Nexor/
+├── Package.swift                             # Swift Package definition (macOS 14.0+, watchOS 10.0+)
+├── build.sh                                  # Unified build, packaging and ad-hoc codesigning script
+├── clean_launchpad_duplicates.sh             # Launch Services & Launchpad cache cleaner
+├── README.md                                 # Bilingual documentation & architecture overview
+├── LICENSE                                   # MIT License
+├── .gitignore                                # Git ignore rules
+├── Resources/
+│   ├── Info.plist                            # App metadata & permission usage descriptions
+│   ├── Icons/                                # Multi-resolution Retina AppIcon & Assets.car
+│   │   ├── AppIcon.icns
+│   │   ├── Assets.car
+│   │   ├── AppIcon.iconset/
+│   │   └── NU.icon/
+│   └── LaunchDaemons/                        # Privileged helper daemon configuration
+│       └── com.networkutilities.helper.plist
+├── Scripts/
+│   └── generate_icon.py                      # Algorithmic icon renderer (PIL / Math geometry)
+├── Sources/
+│   ├── Nexor/                                # Main client application source
+│   │   ├── App/                              # Application lifecycle entry
+│   │   ├── Models/                           # Data models (LANDevice, BluetoothDevice, Traffic, etc.)
+│   │   ├── Services/                         # Core engines (Telemetric, Sniffer, OUI, BT, etc.)
+│   │   ├── Views/                            # SwiftUI Liquid Glass views & MenuBar components
+│   │   └── WatchOS/                          # Dedicated watchOS companion views & services
+│   └── HelperDaemon/                         # Privileged root helper daemon (Mach XPC)
+└── Tests/
+    ├── E2E/                                  # Tier 1-4 End-to-End test suite (44/44 passing)
+    ├── Stress/                               # Concurrency & memory stress benchmarks
+    └── Verification/                         # Independent feature verification probes
+```
+
+---
 
 ### ✨ Key Features
 
@@ -61,17 +101,21 @@ Managed by an actor-isolated detached concurrency manager that ensures UI respon
 8. **iPerf Throughput Benchmark**: Native throughput test runner with custom binary path detection.
 9. **Comprehensive Health Diagnosis**: Multi-stage composite check spanning local loopback, gateway, DNS, and WAN connectivity.
 
-#### 5. 📊 Menu Bar Extra & Traffic Monitor
-- Compact Menu Bar HUD displaying live upload/download rates and network status.
-- Expandable popover with real-time transfer graphs and interface telemetry.
+#### 5. ⌚ watchOS Companion & Menu Bar Extra
+- **watchOS Companion**: Quick-glance network telemetry and wrist-based diagnostic tools.
+- **Menu Bar Extra**: Compact Menu Bar HUD displaying live upload/download rates and network status with expandable sparkline popovers.
 
 #### 6. 🔐 Privileged Root Helper Daemon
 - Decoupled privileged helper registered via `SMAppService.daemon`.
 - Secure Mach XPC protocol (`com.networkutilities.helper.xpc`) for elevated raw socket diagnostics and packet sniffing.
 - Built-in unprivileged developer fallback for running in testing environments.
 
+---
+
 ### 🛠️ Requirements & Building
+
 - **macOS**: macOS 14.0 (Sonoma) or newer.
+- **watchOS**: watchOS 10.0 or newer (for companion target).
 - **Toolchain**: Xcode 15+ / Swift 6.0 toolchain.
 - **Architecture**: Apple Silicon (`arm64`) & Intel (`x86_64`) supported.
 
@@ -86,6 +130,14 @@ cd Nexor
 # Build and immediately launch the application
 ./build.sh --open
 ```
+
+### 🧪 Running Tests
+```bash
+cd Tests/E2E
+./run_tests.sh
+```
+
+---
 
 ### ⚖️ Legal & Security Disclaimer
 > **IMPORTANT NOTICE**:
@@ -102,7 +154,46 @@ cd Nexor
 ## 🇨🇳 简体中文
 
 ### 📖 项目简介
-**Nexor** 是一款专为网络工程师、系统管理员和网络技术爱好者打造的原生 macOS 网络诊断与全频谱射频遥测工具箱。纯 Swift 6 与 SwiftUI 打造，结合现代“液态玻璃（Liquid Glass）”设计美学，将底层数据包捕获、零发包局域网被动探测、蓝牙/Wi-Fi 射频雷达与特权辅助服务融为一体。
+**Nexor** 是一款专为网络工程师、系统管理员和网络技术爱好者打造的原生 macOS 与 watchOS 网络诊断与全频谱射频遥测工具箱。纯 Swift 6 与 SwiftUI 打造，结合现代“液态玻璃（Liquid Glass）”设计美学，将底层数据包捕获、零发包局域网被动探测、蓝牙/Wi-Fi 射频雷达、Apple Watch 腕上监控与特权辅助服务融为一体。
+
+---
+
+### 📂 规范化工程目录结构
+
+```text
+Nexor/
+├── Package.swift                             # Swift Package 规范定义 (支持 macOS 14+, watchOS 10+)
+├── build.sh                                  # 自动化编译、打包与 Ad-hoc 签名脚本
+├── clean_launchpad_duplicates.sh             # Launch Services 与启动台缓存重置工具
+├── README.md                                 # 中英双语项目文档与架构说明
+├── LICENSE                                   # MIT 开源协议
+├── .gitignore                                # Git 忽略规则
+├── Resources/
+│   ├── Info.plist                            # App 元数据与系统隐私权限声明
+│   ├── Icons/                                # 高分辨率 Retina AppIcon 与 Assets.car
+│   │   ├── AppIcon.icns
+│   │   ├── Assets.car
+│   │   ├── AppIcon.iconset/
+│   │   └── NU.icon/
+│   └── LaunchDaemons/                        # 特权守护进程配置文件
+│       └── com.networkutilities.helper.plist
+├── Scripts/
+│   └── generate_icon.py                      # 纯算法图标渲染脚本 (PIL / 数学几何矢量)
+├── Sources/
+│   ├── Nexor/                                # 客户端主源码
+│   │   ├── App/                              # App 生命周期入口
+│   │   ├── Models/                           # 核心数据模型 (LANDevice, BluetoothDevice, Traffic 等)
+│   │   ├── Services/                         # 底层服务引擎 (RF 遥测, 嗅探器, OUI, 蓝牙等)
+│   │   ├── Views/                            # SwiftUI 液态玻璃视图与状态栏组件
+│   │   └── WatchOS/                          # 独立 watchOS 腕上视图与服务
+│   └── HelperDaemon/                         # Root 特权辅助守护进程 (Mach XPC)
+└── Tests/
+    ├── E2E/                                  # 4 层分级 E2E 测试套件 (44/44 全部通过)
+    ├── Stress/                               # 高并发与内存压力测试
+    └── Verification/                         # 独立新特性验证探针
+```
+
+---
 
 ### ✨ 核心功能特性
 
@@ -137,17 +228,19 @@ cd Nexor
 8. **iPerf 吞吐量测速**：深度整合 iperf3 CLI 并提供路径自适应探测。
 9. **网络综合体检**：多阶段自动化检查本地环回、默认网关、DNS 解析及广域网外网联通性。
 
-#### 5. 📊 状态栏菜单（Menu Bar Extra）与流量 HUD
-- 常驻 macOS 顶栏的小巧监控胶囊，实时显示上行/下行速率与网络状态。
-- 点击弹出液态玻璃风格详情卡片，随时查看动态流量折线图与当前网络拓扑。
+#### 5. ⌚ watchOS 腕上监控与菜单栏 HUD
+- **watchOS 协同端**：腕上快速查阅实时网络遥测指标，支持常用轻量诊断工具。
+- **状态栏菜单（Menu Bar Extra）**：常驻 macOS 顶栏的小巧监控胶囊，实时显示上行/下行速率，支持动态流量折线图。
 
 #### 6. 🔐 Root 提权辅助守护进程（Privileged Helper Daemon）
 - 遵循 Apple 现代化 `SMAppService.daemon` 规范的独立守护服务。
 - 基于安全的 Mach XPC 通信协议，保障普通权限 UI 安全调用底层嗅探和原始套接字操作。
 - 内置非特权开发回退模式，方便单元测试与调试。
 
+---
+
 ### 🛠️ 环境要求与本地编译
-- **系统要求**：macOS 14.0 (Sonoma) 或更高版本。
+- **系统要求**：macOS 14.0 (Sonoma) 或更高版本；watchOS 10.0+（用于 Apple Watch 端）。
 - **编译工具**：Xcode 15+ / Swift 6.0 工具链。
 - **架构支持**：通用架构（Apple Silicon `arm64` 与 Intel `x86_64`）。
 
@@ -163,6 +256,14 @@ cd Nexor
 ./build.sh --open
 ```
 
+### 🧪 运行自动化测试
+```bash
+cd Tests/E2E
+./run_tests.sh
+```
+
+---
+
 ### ⚖️ 安全合规与法律免责声明
 > **重要合规提示**：
 > 
@@ -175,5 +276,5 @@ cd Nexor
 ---
 
 ## 📄 License
-This project is open-sourced under the [MIT License](LICENSE).
+This project is open-sourced under the [MIT License](LICENSE).  
 本项目基于 [MIT 许可证](LICENSE) 开源。

@@ -1,10 +1,10 @@
-# macOS Finder & System files
+# macOS System & Finder
 .DS_Store
 .AppleDouble
 .LSOverride
 Icon\r\r
 
-# Xcode / Swift Build Artifacts
+# Swift / Xcode Build Outputs
 .build/
 build/
 DerivedData/
@@ -14,18 +14,19 @@ DerivedData/
 *.pkg
 *.zip
 
-# Test & Debug Executables
+# Test Executables
 test_runner
 challenger_runner
 challenger_stress_runner
 challenger_asan_runner
 verify_runner
 
-# Sensitive or Local Environment
+# Temporary, Logs & Local Environment
 *.env
 *.local
 *.log
 .agents/
+.swiftpm/
 
 # Python Cache
 __pycache__/

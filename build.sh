@@ -31,37 +31,37 @@ if [ -d "$DIR/Resources/LaunchDaemons" ]; then
 fi
 
 # 3b. Verify or build AppIcon.icns
-if [ ! -f "$DIR/Resources/AppIcon.icns" ]; then
-    if [ -d "$DIR/Resources/NU.icon" ]; then
-        echo "Compiling AppIcon from Resources/NU.icon via actool..."
+if [ ! -f "$DIR/Resources/Icons/AppIcon.icns" ]; then
+    if [ -d "$DIR/Resources/Icons/NU.icon" ]; then
+        echo "Compiling AppIcon from Resources/Icons/NU.icon via actool..."
         TMP_ACTOOL=$(mktemp -d)
-        xcrun actool "$DIR/Resources/NU.icon" --compile "$TMP_ACTOOL" --platform macosx --minimum-deployment-target 14.0 --app-icon NU --standalone-icon-behavior all --output-partial-info-plist "$TMP_ACTOOL/partial.plist" 2>/dev/null || true
+        xcrun actool "$DIR/Resources/Icons/NU.icon" --compile "$TMP_ACTOOL" --platform macosx --minimum-deployment-target 14.0 --app-icon NU --standalone-icon-behavior all --output-partial-info-plist "$TMP_ACTOOL/partial.plist" 2>/dev/null || true
         if [ -f "$TMP_ACTOOL/NU.icns" ]; then
-            cp "$TMP_ACTOOL/NU.icns" "$DIR/Resources/AppIcon.icns"
-            cp "$TMP_ACTOOL/Assets.car" "$DIR/Resources/Assets.car" 2>/dev/null || true
+            cp "$TMP_ACTOOL/NU.icns" "$DIR/Resources/Icons/AppIcon.icns"
+            cp "$TMP_ACTOOL/Assets.car" "$DIR/Resources/Icons/Assets.car" 2>/dev/null || true
         fi
         rm -rf "$TMP_ACTOOL"
-    elif [ -f "$DIR/Resources/generate_icon.py" ]; then
+    elif [ -f "$DIR/Scripts/generate_icon.py" ]; then
         echo "AppIcon.icns not found, generating via generate_icon.py..."
-        python3 "$DIR/Resources/generate_icon.py"
+        python3 "$DIR/Scripts/generate_icon.py"
     fi
 fi
 
-if [ -f "$DIR/Resources/AppIcon.icns" ]; then
-    cp "$DIR/Resources/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+if [ -f "$DIR/Resources/Icons/AppIcon.icns" ]; then
+    cp "$DIR/Resources/Icons/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
     echo "✓ Installed AppIcon.icns into Contents/Resources/"
 fi
 
-if [ -f "$DIR/Resources/Assets.car" ]; then
-    cp "$DIR/Resources/Assets.car" "$RESOURCES_DIR/Assets.car"
+if [ -f "$DIR/Resources/Icons/Assets.car" ]; then
+    cp "$DIR/Resources/Icons/Assets.car" "$RESOURCES_DIR/Assets.car"
     echo "✓ Installed Assets.car into Contents/Resources/"
 fi
 
 # 4. Find Swift source files
-SWIFT_FILES=$(find "$DIR/Sources/TeamworkNetworkUtilities" -name "*.swift")
+SWIFT_FILES=$(find "$DIR/Sources/Nexor" -name "*.swift")
 
 if [ -z "$SWIFT_FILES" ]; then
-    echo "Error: No Swift files found in Sources/TeamworkNetworkUtilities" >&2
+    echo "Error: No Swift files found in Sources/Nexor" >&2
     exit 1
 fi
 
@@ -112,11 +112,32 @@ xattr -c "$APP_BUNDLE" 2>/dev/null || true
 xattr -rd com.apple.FinderInfo "$APP_BUNDLE" 2>/dev/null || true
 xattr -rd com.apple.ResourceFork "$APP_BUNDLE" 2>/dev/null || true
 codesign --force --deep --sign - "$APP_BUNDLE"
-echo "✓ App bundle signed successfully"
+echo "✓ App bundle signed"
 
 echo "=== Build Complete: $APP_BUNDLE ==="
 
+# Deploy to workspace root Nexor.app
+WORKSPACE_APP="$(dirname "$DIR")/Nexor.app"
+OLD_WORKSPACE_APP="$(dirname "$DIR")/NetworkUtilities.app"
+echo "Deploying to $WORKSPACE_APP..."
+rm -rf "$WORKSPACE_APP"
+rm -rf "$OLD_WORKSPACE_APP"
+cp -R "$APP_BUNDLE" "$WORKSPACE_APP"
+rm -rf "$WORKSPACE_APP/Contents/_CodeSignature" 2>/dev/null || true
+dot_clean -m "$WORKSPACE_APP" 2>/dev/null || true
+xattr -cr "$WORKSPACE_APP" 2>/dev/null || true
+xattr -c "$WORKSPACE_APP" 2>/dev/null || true
+xattr -rd com.apple.FinderInfo "$WORKSPACE_APP" 2>/dev/null || true
+xattr -rd com.apple.ResourceFork "$WORKSPACE_APP" 2>/dev/null || true
+codesign --force --deep --sign - "$WORKSPACE_APP"
+echo "✓ Deployed and verified up-to-date bundle to $WORKSPACE_APP"
+
+# Unregister internal development bundle and legacy bundles, ensure only canonical Nexor is registered
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$APP_BUNDLE" 2>/dev/null || true
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$OLD_WORKSPACE_APP" 2>/dev/null || true
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$WORKSPACE_APP" 2>/dev/null || true
+
 if [ "$1" = "--open" ]; then
-    echo "Launching $APP_BUNDLE..."
-    open "$APP_BUNDLE"
+    echo "Launching $WORKSPACE_APP..."
+    open "$WORKSPACE_APP"
 fi

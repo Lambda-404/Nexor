@@ -4,27 +4,27 @@ import Foundation
 
 var targets: [Target] = [
     .executableTarget(
-        name: "TeamworkNetworkUtilities",
+        name: "Nexor",
         dependencies: [],
-        path: "Sources/TeamworkNetworkUtilities",
+        path: "Sources/Nexor",
         linkerSettings: [
             .linkedFramework("SwiftUI"),
-            .linkedFramework("AppKit"),
-            .linkedFramework("CoreWLAN"),
-            .linkedFramework("SystemConfiguration"),
             .linkedFramework("Network"),
-            .linkedFramework("ServiceManagement"),
             .linkedFramework("CoreBluetooth"),
-            .linkedFramework("IOBluetooth"),
-            .linkedFramework("CoreLocation")
+            .linkedFramework("CoreLocation"),
+            .linkedFramework("AppKit", .when(platforms: [.macOS])),
+            .linkedFramework("CoreWLAN", .when(platforms: [.macOS])),
+            .linkedFramework("SystemConfiguration", .when(platforms: [.macOS])),
+            .linkedFramework("ServiceManagement", .when(platforms: [.macOS])),
+            .linkedFramework("IOBluetooth", .when(platforms: [.macOS]))
         ]
     )
 ]
 
 var products: [Product] = [
     .executable(
-        name: "Teamwork_NetworkUtilities",
-        targets: ["TeamworkNetworkUtilities"]
+        name: "Nexor",
+        targets: ["Nexor"]
     )
 ]
 
@@ -45,29 +45,11 @@ if FileManager.default.fileExists(atPath: "Sources/HelperDaemon") {
     )
 }
 
-// Conditionally register E2ETests target if directory exists (Milestone 6)
-if FileManager.default.fileExists(atPath: "Tests/E2ETests") {
-    var excludes: [String] = []
-    let potentialExcludes = ["run_tests.sh", "test_runner", "test_runner.dSYM", "Fixtures"]
-    for item in potentialExcludes {
-        if FileManager.default.fileExists(atPath: "Tests/E2ETests/\(item)") {
-            excludes.append(item)
-        }
-    }
-    targets.append(
-        .testTarget(
-            name: "E2ETests",
-            dependencies: ["TeamworkNetworkUtilities"],
-            path: "Tests/E2ETests",
-            exclude: excludes
-        )
-    )
-}
-
 let package = Package(
-    name: "TeamworkNetworkUtilities",
+    name: "Nexor",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v14),
+        .watchOS(.v10)
     ],
     products: products,
     dependencies: [],
